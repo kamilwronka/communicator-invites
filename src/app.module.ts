@@ -7,6 +7,8 @@ import { InvitesModule } from './invites/invites.module';
 import { HealthController } from './health/health.controller';
 import { MongoConfig } from './config/types';
 import { TerminusModule } from '@nestjs/terminus';
+import { ServersModule } from './servers/servers.module';
+import { UsersModule } from './users/users.module';
 import servicesConfig from './config/services.config';
 import mongoConfig from './config/mongo.config';
 
@@ -45,6 +47,8 @@ import mongoConfig from './config/mongo.config';
         abortEarly: true,
       },
     }),
+    ServersModule,
+    UsersModule,
   ],
   controllers: [HealthController],
 })

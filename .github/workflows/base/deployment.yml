@@ -45,7 +45,7 @@ spec:
             - name: MONGODB_USER
               value: root
             - name: MONGODB_DATABASE
-              value: channels
+              value: invites
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:

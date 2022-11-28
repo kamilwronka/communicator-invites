@@ -15,4 +15,5 @@ export interface MongoConfig {
 
 export interface ServicesConfig {
   servers: string;
+  users: string;
 }

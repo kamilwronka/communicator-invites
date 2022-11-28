@@ -38,7 +38,7 @@ spec:
             - name: PORT
               value: "4000"
             - name: ENV
-              value: dev
+              value: local
             #mongo
             - name: MONGODB_HOST
               value: mongo-mongodb
@@ -47,7 +47,7 @@ spec:
             - name: MONGODB_USER
               value: root
             - name: MONGODB_DATABASE
-              value: channels
+              value: invites
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
