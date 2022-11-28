@@ -73,8 +73,22 @@ export class InvitesService {
     };
 
     const invite = new this.inviteModel(inviteData);
+    const databaseResponse = await invite.save();
 
-    return invite.save();
+    const user = await this.usersService.getById(invite.inviter.id);
+    const server = await this.serversService.getById(invite.server.id);
+
+    const response = {
+      ...databaseResponse.toJSON(),
+      server: {
+        id: server._id,
+        name: server.name,
+        icon: server.icon,
+      },
+      inviter: user,
+    };
+
+    return new Invite(response);
   }
 
   async deleteInvite(id: string) {
