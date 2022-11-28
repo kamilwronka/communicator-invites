@@ -27,7 +27,7 @@ spec:
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: deny-path-from-outside
+  name: deny-from-outside
   namespace: communicator-dev
 spec:
   selector:
@@ -38,8 +38,14 @@ spec:
     - from:
         - source:
             notPrincipals:
-              - "cluster.local/ns/communicator-dev/sa/users"
+              - "cluster.local/ns/communicator-dev/sa/servers"
       to:
         - operation:
-            paths: ["/private/channels"]
+            paths: ["/*"]
+            methods: ["DELETE"]
+        - operation:
+            paths: ["/"]
             methods: ["POST"]
+        - operation:
+            paths: ["/servers/*"]
+            methods: ["GET"]
