@@ -51,26 +51,6 @@ spec:
                 secretKeyRef:
                   name: mongodb
                   key: mongodb-root-password
-            # aws
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws
-                  key: aws-access-key-id
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: aws
-                  key: aws-secret-access-key
-            - name: AWS_S3_BUCKET_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: aws
-                  key: aws-s3-bucket-name
-            - name: LIVEKIT_API_KEY
-              value: changeme
-            - name: LIVEKIT_API_SECRET
-              value: changeme
 
           livenessProbe:
             httpGet:

@@ -1,17 +1,35 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import * as Joi from 'joi';
 import appConfig from './config/app.config';
 import { InvitesModule } from './invites/invites.module';
+import { HealthController } from './health/health.controller';
+import { MongoConfig } from './config/types';
+import { TerminusModule } from '@nestjs/terminus';
+import servicesConfig from './config/services.config';
+import mongoConfig from './config/mongo.config';
 
 @Module({
   imports: [
     InvitesModule,
+    TerminusModule,
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const { host, port, password, user, database } =
+          configService.get<MongoConfig>('mongodb');
+
+        return {
+          uri: `mongodb://${user}:${password}@${host}:${port}`,
+          ssl: false,
+          dbName: database,
+        };
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig],
+      load: [appConfig, servicesConfig, mongoConfig],
       cache: true,
       validationSchema: Joi.object({
         PORT: Joi.string(),
@@ -22,9 +40,12 @@ import { InvitesModule } from './invites/invites.module';
         MONGODB_ACCESS_PORT: Joi.number(),
         MONGODB_DATABASE: Joi.string(),
       }),
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: true,
+      },
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [HealthController],
 })
 export class AppModule {}
