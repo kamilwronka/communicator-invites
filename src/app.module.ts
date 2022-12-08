@@ -11,6 +11,7 @@ import { ServersModule } from './servers/servers.module';
 import { UsersModule } from './users/users.module';
 import servicesConfig from './config/services.config';
 import mongoConfig from './config/mongo.config';
+import rabbitmqConfig from './config/rabbitmq.config';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import mongoConfig from './config/mongo.config';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, servicesConfig, mongoConfig],
+      load: [appConfig, servicesConfig, mongoConfig, rabbitmqConfig],
       cache: true,
       validationSchema: Joi.object({
         PORT: Joi.string(),
@@ -41,6 +42,10 @@ import mongoConfig from './config/mongo.config';
         MONGODB_HOST: Joi.string(),
         MONGODB_ACCESS_PORT: Joi.number(),
         MONGODB_DATABASE: Joi.string(),
+        RABBITMQ_USER: Joi.string(),
+        RABBITMQ_PASSWORD: Joi.string(),
+        RABBITMQ_HOST: Joi.string(),
+        RABBITMQ_ACCESS_PORT: Joi.string(),
       }),
       validationOptions: {
         allowUnknown: true,

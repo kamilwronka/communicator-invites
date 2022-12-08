@@ -1,21 +1,19 @@
-import { HttpModule } from '@nestjs/axios';
+import { RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ServicesConfig } from 'src/config/types';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Server, ServerSchema } from './schemas/server.schema';
 import { ServersService } from './servers.service';
 
 @Module({
   imports: [
-    HttpModule.registerAsync({
+    MongooseModule.forFeature([{ name: Server.name, schema: ServerSchema }]),
+    RabbitMQModule.forRootAsync(RabbitMQModule, {
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const { servers } = configService.get<ServicesConfig>('services');
+        const config = configService.get<RabbitMQConfig>('rabbitmq');
 
-        return {
-          baseURL: servers,
-          maxRedirects: 5,
-          timeout: 5000,
-        };
+        return config;
       },
     }),
   ],

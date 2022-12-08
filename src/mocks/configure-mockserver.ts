@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { mockServerClient } from 'mockserver-client';
 
 const getUserByIdMock = {
@@ -33,6 +34,12 @@ const getServerByIdMock = {
 };
 
 export const configureMockserver = async () => {
-  await mockServerClient('mockserver', 1080).mockAnyResponse(getUserByIdMock);
-  await mockServerClient('mockserver', 1080).mockAnyResponse(getServerByIdMock);
+  try {
+    await mockServerClient('mockserver', 1080).mockAnyResponse(getUserByIdMock);
+    await mockServerClient('mockserver', 1080).mockAnyResponse(
+      getServerByIdMock,
+    );
+  } catch (error) {
+    Logger.warn('unable to load mocks');
+  }
 };

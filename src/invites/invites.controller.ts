@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   UseInterceptors,
@@ -45,12 +47,14 @@ export class InvitesController {
 
   @ApiParam({ name: 'id', type: String })
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOkResponse({
     description: 'The record has been successfully deleted',
     type: Invite,
   })
-  async deleteInvite(@Param() params: InviteParamsDto): Promise<Invite> {
-    return this.invitesService.deleteInvite(params.id);
+  async deleteInvite(@Param() params: InviteParamsDto) {
+    await this.invitesService.deleteInvite(params.id);
+    return;
   }
 
   @ApiParam({ name: 'id', type: String })

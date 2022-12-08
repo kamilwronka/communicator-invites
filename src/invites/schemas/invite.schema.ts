@@ -1,44 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { Document } from 'mongoose';
+import { Server } from '../../servers/schemas/server.schema';
+import { User } from '../../users/schemas/user.schema';
 
-export type InviterDocument = Inviter & Document;
 export type InviteDocument = Invite & Document;
 
-@Schema({ _id: false })
-export class Server {
-  @ApiProperty()
-  @Prop()
-  id: string;
-
-  @ApiProperty()
-  @Expose()
-  username?: string;
-  @ApiProperty()
-  @Expose()
-  avatar?: string;
-}
-
-@Schema({ _id: false })
-export class Inviter {
-  @ApiProperty()
-  @Prop()
-  id: string;
-
-  @ApiProperty()
-  @Expose()
-  icon?: string;
-  @ApiProperty()
-  @Expose()
-  name?: string;
-}
-
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Invite {
-  @ApiProperty()
-  @Transform((value) => value.obj._id.toString())
+  @Exclude()
   _id: string;
+
+  @ApiProperty()
+  id: string;
 
   @ApiProperty()
   @Prop()
@@ -48,15 +23,21 @@ export class Invite {
   @Prop()
   maxUses: number;
 
-  @ApiProperty()
-  @Type(() => Server)
-  @Prop({ type: Server })
-  server: Server;
+  @Exclude()
+  @Prop({ type: String })
+  serverId: string;
 
   @ApiProperty()
-  @Type(() => Inviter)
-  @Prop({ type: Inviter })
-  inviter: Inviter;
+  @Type(() => Server)
+  server: Server;
+
+  @Exclude()
+  @Prop({ type: String })
+  inviterId: string;
+
+  @ApiProperty()
+  @Type(() => User)
+  inviter: User;
 
   @Exclude()
   createdAt?: string;
@@ -73,3 +54,17 @@ export class Invite {
 }
 
 export const InviteSchema = SchemaFactory.createForClass(Invite);
+
+InviteSchema.virtual('inviter', {
+  ref: User.name,
+  localField: 'inviterId',
+  foreignField: 'userId',
+  justOne: true,
+});
+
+InviteSchema.virtual('server', {
+  ref: Server.name,
+  localField: 'serverId',
+  foreignField: 'serverId',
+  justOne: true,
+});
